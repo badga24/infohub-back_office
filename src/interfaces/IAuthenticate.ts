@@ -1,3 +1,3 @@
 export interface IAuthenticated {
-    token: string;
+    accessToken: string;
 }

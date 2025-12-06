@@ -13,7 +13,7 @@ export function Login(props: ILoginProps) {
     const [cookies, setCookies] = useCookies();
     const onSubmit = (data: ILogin) => {
         login(data).then((response) => {
-            setCookies(import.meta.env.VITE_APP_COOKIE_TOKEN_KEY!, response.data.token, { path: '/' });
+            setCookies(import.meta.env.VITE_APP_COOKIE_TOKEN_KEY!, response.data.accessToken, { path: '/', maxAge: 30 * 24 * 60 * 60 });
             window.location.href = routes.home.getPath();
         }).catch((error) => {
             console.error("Login error:", error);

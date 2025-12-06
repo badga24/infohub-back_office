@@ -20,7 +20,10 @@ const WebRouter = () => {
     }
 
     function PrivateRoutes() {
-        if (!cookies[import.meta.env.VITE_APP_COOKIE_TOKEN_KEY!]) {
+        console.log(!cookies[import.meta.env.VITE_APP_COOKIE_TOKEN_KEY!]);
+        if (cookies[import.meta.env.VITE_APP_COOKIE_TOKEN_KEY!] == null ||
+            cookies[import.meta.env.VITE_APP_COOKIE_TOKEN_KEY!] === '' ||
+            cookies[import.meta.env.VITE_APP_COOKIE_TOKEN_KEY!] === undefined) {
             window.location.href = routes.login.getPath();
         } else {
             return <Outlet />;
