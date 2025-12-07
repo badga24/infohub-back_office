@@ -1,4 +1,7 @@
+import type { IFile } from "./IFile";
+
 export interface IEvent {
-    id: number;
-    name: string;
+    id: number | null;
+    name: string | null;
+    cover?: IFile | null; 
 }

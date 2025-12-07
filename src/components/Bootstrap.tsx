@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useCookies } from 'react-cookie';
 import { bootstrapAxios } from '../config';
 

@@ -1,27 +1,36 @@
-import { useFieldArray, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import type { ICreateEvent } from '../../../interfaces/ICreateEvent';
-import type { ICreateTopic } from '../../../interfaces/ICreateTopic';
 import { createEvent } from '../../../service/event.service';
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../../../routes';
+import { buildIFile } from '../../../utils/utils';
+import { uploadFile } from '../../../service/file.service';
 
 export interface IEventViewProps {
 }
 
-export function EventView(props: IEventViewProps) {
+export function EventView({ }: IEventViewProps) {
     const navigate = useNavigate();
-    const { register, handleSubmit, control } = useForm<ICreateEvent>({})
+    const { register, handleSubmit, control } = useForm<ICreateEvent & { coverFile: File }>({})
     const { fields: topics, append: addTopic, remove: deleteTopic } = useFieldArray({ control, name: "topics" })
     const { fields: categories, append: addCategory, remove: deleteCategory } = useFieldArray({ control, name: "categories" })
-    const onSubmit = async (data: ICreateEvent) => {
-        createEvent(data).then(() => {
+    const onSubmit = async (data: ICreateEvent & { coverFile: File }) => {
+        try {
+            if (data.coverFile) {
+                const fileData = buildIFile(data.coverFile);
+                data.cover = fileData;
+            }
+            const res = await createEvent(data);
+            if (data.coverFile && res.data.cover) {
+                await uploadFile(res.data.cover, data.coverFile);
+            }
             navigate(routes.home.getPath());
-        }).catch((error) => {
-            console.error("Erreur lors de la création de l'événement :", error);
-        });
+        } catch (err) {
+            console.error("Erreur lors de la création de l'événement :", err);
+        }
     }
 
-    const TopicInput = ({ index, control, register, removeTopic }: { index: number, control: any, register: any, removeTopic: (index: number) => void }) => {
+    const TopicInput = ({ index, control, register }: { index: number, control: any, register: any }) => {
         const { fields: speakers, append: addSpeaker, remove: deleteSpeaker } = useFieldArray({ control, name: `topics.${index}.speakers` as const })
         return (
             <div>
@@ -42,9 +51,21 @@ export function EventView(props: IEventViewProps) {
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
+                <label htmlFor="coverFile">Choisissez un fichier :</label>
+                <Controller
+                    name="coverFile"
+                    control={control}
+                    render={({ field }) => (
+                        <input
+                            type="file"
+                            onChange={(e) => field.onChange(
+                                e.target.files ? e.target.files[0] : null
+                            )}
+                        />)}
+                />
                 <input type="text" {...register('name')} placeholder="Nom de l'événement" />
                 <input type="text" {...register('location.address')} />
-                {topics.map((field, index) => <TopicInput key={field.id} index={index} control={control} register={register} removeTopic={deleteTopic} />)}
+                {topics.map((field, index) => <TopicInput key={field.id} index={index} control={control} register={register} />)}
                 <button type="button" onClick={() => addTopic({ name: '', speakers: [] })}>Ajouter un topic</button>
                 {categories.map((field, index) => (
                     <div key={field.id}>

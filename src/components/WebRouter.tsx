@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
 import { routes } from '../routes';
 import type { IRoute } from '../interfaces/IRoute';
 import { useCookies } from 'react-cookie';

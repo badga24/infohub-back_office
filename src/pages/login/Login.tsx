@@ -7,7 +7,7 @@ import { routes } from '../../routes';
 export interface ILoginProps {
 }
 
-export function Login(props: ILoginProps) {
+export function Login({}: ILoginProps) {
 
     const { register, handleSubmit } = useForm<ILogin>()
     const [cookies, setCookies] = useCookies();

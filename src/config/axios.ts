@@ -1,5 +1,4 @@
 import axios from "axios";
-import { routes } from "../routes";
 
 
 const client = axios.create({
@@ -29,5 +28,7 @@ const bootstrapAxios = (getToken: () => string | null) => {
     );
 }
 
+const external = axios.create({});
 
-export { client, bootstrapAxios };
+
+export { client, bootstrapAxios, external };
