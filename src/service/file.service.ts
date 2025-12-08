@@ -17,4 +17,4 @@ export const getUploadUrl = async (file: IFile) => client.get<string>(`${baseURI
 
 export const getDownloadUrl = async (file: IFile) => client.get<string>(`${baseURI}/${file.id}/download-url`);
 
-export const confirmFileUpload = async (file: IFile) => client.post<void>(`${baseURI}/${file.id}/confirm-upload`);
+export const confirmFileUpload = async (file: IFile) => client.put<void>(`${baseURI}/${file.id}/confirm-upload`);
